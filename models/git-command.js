@@ -10,27 +10,30 @@ class GitCommand {
     }
 
     //Command: git status
-    status(){        
-        /*
-            For assignment #1:
-            Create logic here and run unit testing.
-        */
+    status(){
+        let result = "", count = 0;
+        for(let file in this.working_directory.new_changes){
+            count++;
+            result += `\n${file}`;
+        }
+        if(count == 0){
+            result = "\n";
+        }
+        return `You have ${count} change/s.`+result;
     }
 
     //Command: git add <filename/file directory/wildcard> 
     add(path_file){
         let modified_files = this.working_directory.new_changes;
-        
         if(modified_files[path_file]){
             this.staging.push(modified_files[path_file]);
             delete modified_files[path_file];
-        }
-        /*
-            For assignment #2:
-            Create logic here and run unit testing.
-            Don't forget to uncomment the unit tests.
-        */
-        else{
+        }else if(path_file == "."){
+            delete this.working_directory.new_changes;
+            delete modified_files[path_file];
+        }else if(path_file == "*"){
+            delete modified_files[path_file];
+        }else{
             return `Failed to add ${path_file}! File is not modified or missing.`;
         }
         return "Successfully added as index file/s.";
